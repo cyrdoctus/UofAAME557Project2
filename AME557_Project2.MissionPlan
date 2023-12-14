@@ -1,0 +1,3054 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<FreeFlyerProjectFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" timePrecisionMode="nanosecond" schemaVersion="7.8.0.1">
+  <ProjectInformation>
+    <Author />
+    <Source />
+    <FreeFlyerVersion>7.8.1.50021</FreeFlyerVersion>
+    <RevisionNumber />
+    <Title>Lambert Transfer Calculation</Title>
+    <Subject />
+    <Category />
+    <Keywords />
+    <Comments>This Mission Plan demonstrates how to use FreeForm scripting to calculate a Lambert transfer trajectory. The user specifies the departure date, time of flight, departure planet, arrival planet, and whether to use a prograde or a retrograde orbit.</Comments>
+    <Notes />
+  </ProjectInformation>
+  <ProjectPreferences>
+    <General>
+      <LockProjectFromEditing>false</LockProjectFromEditing>
+    </General>
+    <OnOpen>
+      <ShowControlSequence>true</ShowControlSequence>
+      <ShowEmptyEnvironment>false</ShowEmptyEnvironment>
+      <ShowNotes>false</ShowNotes>
+      <ShowHome>false</ShowHome>
+      <ShowOutput>false</ShowOutput>
+      <CreateBackup>false</CreateBackup>
+      <BackupLocation></BackupLocation>
+    </OnOpen>
+    <OnRun>
+      <SaveMissionPlan>false</SaveMissionPlan>
+      <HideWarningMessages>false</HideWarningMessages>
+    </OnRun>
+  </ProjectPreferences>
+  <ProjectDataFiles>
+    <EarthOrientationFile useDefault="true"></EarthOrientationFile>
+    <ElectronDensityCoefficientFile useDefault="true"></ElectronDensityCoefficientFile>
+    <GeopotentialFile useDefault="true"></GeopotentialFile>
+    <HarrisPriesterDragFile useDefault="true"></HarrisPriesterDragFile>
+    <JacchiaAtmosphereModelFile useDefault="true"></JacchiaAtmosphereModelFile>
+    <LeapSecondFile useDefault="true"></LeapSecondFile>
+    <MagneticFieldFile useDefault="true"></MagneticFieldFile>
+    <PlanetaryFile useDefault="true"></PlanetaryFile>
+    <StationGeodeticsFile useDefault="true"></StationGeodeticsFile>
+    <SolidTideFile useDefault="true"></SolidTideFile>
+    <DSTFile useDefault="true"></DSTFile>
+    <StarFieldFile useDefault="true"></StarFieldFile>
+  </ProjectDataFiles>
+  <ProjectObjects>
+    <Object>
+      <SolarSystem name="FF_SolarSystem" isConstant="false" isGlobal="true">
+        <Name>FF_SolarSystem</Name>
+        <ComputePolarMotion>true</ComputePolarMotion>
+        <ApplyUT1Correction>true</ApplyUT1Correction>
+        <COUpdateInterval units="s" displayed_units="s">0</COUpdateInterval>
+        <NPUpdateInterval units="s" displayed_units="s">1800</NPUpdateInterval>
+        <IonosphereOptions>
+          <IonosphereOptions name="FF_SolarSystem_|ionoOptions|" isConstant="false" isGlobal="true">
+            <Name>FF_SolarSystem_|ionoOptions|</Name>
+            <MaximumHeight units="km" displayed_units="km">1000</MaximumHeight>
+            <MinimumHeight units="km" displayed_units="km">80</MinimumHeight>
+            <IntegrationStepSize units="km" displayed_units="km">25</IntegrationStepSize>
+            <ScaleFactor units="" displayed_units="">1</ScaleFactor>
+            <Model>0</Model>
+            <metadata dim="0" />
+          </IonosphereOptions>
+        </IonosphereOptions>
+        <NoradKeplerEqTolerance units="" displayed_units="">1e-012</NoradKeplerEqTolerance>
+        <metadata dim="0" />
+      </SolarSystem>
+    </Object>
+    <Object>
+      <ConsoleWindow name="Console" isConstant="false" isGlobal="true">
+        <Name>Console</Name>
+        <WindowTitle>Console</WindowTitle>
+        <WordWrap>false</WordWrap>
+        <CurrentTextColor>0</CurrentTextColor>
+        <BackColor>16777215</BackColor>
+        <Dimension units="" displayed_units="">10</Dimension>
+        <DockMode>1</DockMode>
+        <CurrentFontType>0</CurrentFontType>
+        <UseStdOut>false</UseStdOut>
+        <ShowOnRun>false</ShowOnRun>
+        <metadata dim="0" />
+      </ConsoleWindow>
+    </Object>
+    <Object>
+      <Spacecraft name="Hermes" isConstant="false" isGlobal="false">
+        <Name>Hermes</Name>
+        <EpochDetails>
+          <EpochSystem>UTC</EpochSystem>
+          <EpochTimeZone>UTC +/- 00:00</EpochTimeZone>
+          <EpochFormat>Calendar</EpochFormat>
+          <EpochType>Absolute</EpochType>
+          <EpochTypeInfo />
+        </EpochDetails>
+        <Epoch>Jan 01 2010 00:00:00.000000000</Epoch>
+        <ReferenceFrame>Mean of J2000 Earth Equator</ReferenceFrame>
+        <CentralBody>Earth</CentralBody>
+        <ElementType>Cartesian</ElementType>
+        <OrbitState>
+          <Cartesian>
+            <X units="km" displayed_units="km">-3410.673</X>
+            <Y units="km" displayed_units="km">5950.957</Y>
+            <Z units="km" displayed_units="km">-1788.627</Z>
+            <VX units="km/s" displayed_units="km/s">1.893006</VX>
+            <VY units="km/s" displayed_units="km/s">-1.071993</VY>
+            <VZ units="km/s" displayed_units="km/s">-7.176346</VZ>
+          </Cartesian>
+        </OrbitState>
+        <Orientation>
+          <AttitudeCoordinateSystem />
+          <AttitudeRefFrame>LVLH</AttitudeRefFrame>
+          <AttitudeSystem>EulerAngles</AttitudeSystem>
+          <AttitudeState>
+            <EulerAngles>
+              <EulerAngles units="deg" displayed_units="deg" dim="3">
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+              </EulerAngles>
+              <EulerRates units="deg/s" displayed_units="deg/s" dim="3">
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+              </EulerRates>
+              <EulerSequence units="" displayed_units="" dim="3">
+                <value>3</value>
+                <value>1</value>
+                <value>2</value>
+              </EulerSequence>
+            </EulerAngles>
+          </AttitudeState>
+        </Orientation>
+        <PhysicalProperties>
+          <ForceCoefficientType>0</ForceCoefficientType>
+          <ForceCoefficientTypes>
+            <Standard>
+              <Cd units="" displayed_units="">2.2</Cd>
+              <Cr units="" displayed_units="">1.4</Cr>
+            </Standard>
+          </ForceCoefficientTypes>
+          <Cl units="" displayed_units="">1.2</Cl>
+          <DragArea units="m^2" displayed_units="m^2">1</DragArea>
+          <LiftArea units="m^2" displayed_units="m^2">1</LiftArea>
+          <SRPArea units="m^2" displayed_units="m^2">1</SRPArea>
+          <SatelliteId>1</SatelliteId>
+        </PhysicalProperties>
+        <Visualization>
+          <Color>255</Color>
+          <BodyScale units="" displayed_units="">100000</BodyScale>
+          <TailLength units="" displayed_units="">100</TailLength>
+          <HistoryMode>0</HistoryMode>
+          <TickType>None</TickType>
+          <Annotation></Annotation>
+          <ModelDefinitionType>0</ModelDefinitionType>
+          <ModelDefinition>
+            <ThreeDModelFilename>
+              <ThreeDModelFile>Internal::GlobalStar</ThreeDModelFile>
+            </ThreeDModelFilename>
+          </ModelDefinition>
+        </Visualization>
+        <LaunchCoordinates>
+          <LCSEpochDetails>
+            <LCSEpochSystem>UTC</LCSEpochSystem>
+            <LCSEpochTimeZone>UTC +/- 00:00</LCSEpochTimeZone>
+            <LCSEpochFormat>Calendar</LCSEpochFormat>
+            <LCSEpochType>Absolute</LCSEpochType>
+            <LCSEpochTypeInfo />
+          </LCSEpochDetails>
+          <LCSEpoch>Jan 01 2010 00:00:00.000000000</LCSEpoch>
+          <LCSLongitude units="deg" displayed_units="deg">0</LCSLongitude>
+          <LCSLatitude units="deg" displayed_units="deg">0</LCSLatitude>
+        </LaunchCoordinates>
+        <InertialData>
+          <VehicleDryMass units="kg" displayed_units="kg">1000</VehicleDryMass>
+          <VehicleDryMOI units="kg m^2" displayed_units="kg m^2" dim="3,3">
+            <value>1200</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>1200</value>
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+            <value>1200</value>
+          </VehicleDryMOI>
+          <MassTotal units="kg" displayed_units="kg">1990.18</MassTotal>
+          <VehicleDryCenterOfGravity units="m" displayed_units="m" dim="(3)">
+            <value>0</value>
+            <value>0</value>
+            <value>0</value>
+          </VehicleDryCenterOfGravity>
+        </InertialData>
+        <OrbitNumberCumulative units="" displayed_units="">1</OrbitNumberCumulative>
+        <OrbitNumberBounded units="" displayed_units="">1</OrbitNumberBounded>
+        <OrbitNumberResetNumber units="" displayed_units="">0</OrbitNumberResetNumber>
+        <OrbitNumberDaily units="" displayed_units="">1</OrbitNumberDaily>
+        <OrbitNumberResetLongitude units="" displayed_units="">20</OrbitNumberResetLongitude>
+        <StateAdvancerType>PropFM</StateAdvancerType>
+        <StateAdvancer>
+          <PropFM>
+            <Prop>
+              <RK89 name="Hermes_Propagator" isConstant="false" isGlobal="false">
+                <Name>Hermes_Propagator</Name>
+                <StepSize units="s" displayed_units="s">10800</StepSize>
+                <StepJustTaken units="s" displayed_units="s">300.0</StepJustTaken>
+                <StepToTake units="s" displayed_units="s">300.0</StepToTake>
+                <LargeCurvature units="" displayed_units="">0</LargeCurvature>
+                <FixedStep>1</FixedStep>
+                <Tolerance units="" displayed_units="">1e-012</Tolerance>
+                <AllowErrorViolation>false</AllowErrorViolation>
+                <CalculateSTM>true</CalculateSTM>
+                <STMCalculationMethod>2</STMCalculationMethod>
+                <FM>
+                  <ForceModel name="Hermes_ForceModel" isConstant="false" isGlobal="false">
+                    <Name>Hermes_ForceModel</Name>
+                    <GravitatingBodies>
+                      <CelestialObjects dim="11">
+                        <value>Mercury</value>
+                        <value>Venus</value>
+                        <value>Earth</value>
+                        <value>Mars</value>
+                        <value>Jupiter</value>
+                        <value>Saturn</value>
+                        <value>Uranus</value>
+                        <value>Neptune</value>
+                        <value>Pluto</value>
+                        <value>Moon</value>
+                        <value>Sun</value>
+                      </CelestialObjects>
+                      <UseBodyForce dim="11">
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>true</value>
+                      </UseBodyForce>
+                      <PlanetFieldType units="" displayed_units="" dim="11">
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                      </PlanetFieldType>
+                      <PlanetFieldDegree units="" displayed_units="" dim="11">
+                        <value>0</value>
+                        <value>0</value>
+                        <value>4</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                      </PlanetFieldDegree>
+                      <PlanetFieldOrder units="" displayed_units="" dim="11">
+                        <value>0</value>
+                        <value>0</value>
+                        <value>4</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                      </PlanetFieldOrder>
+                      <PlanetoPotentialFilename dim="11">
+                        <value></value>
+                        <value></value>
+                        <value>DEFAULT</value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                      </PlanetoPotentialFilename>
+                      <SolidTideFilename dim="11">
+                        <value></value>
+                        <value></value>
+                        <value>DEFAULT</value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                        <value></value>
+                      </SolidTideFilename>
+                      <UseZeroTideModel dim="11">
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                        <value>false</value>
+                      </UseZeroTideModel>
+                      <SolidTideDegree units="" displayed_units="" dim="11">
+                        <value>0</value>
+                        <value>0</value>
+                        <value>2</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                      </SolidTideDegree>
+                      <SolidTideOrder units="" displayed_units="" dim="11">
+                        <value>0</value>
+                        <value>0</value>
+                        <value>2</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                      </SolidTideOrder>
+                    </GravitatingBodies>
+                    <SRP>false</SRP>
+                    <SRPForceGeometry>0</SRPForceGeometry>
+                    <Atmospheric>
+                      <Drag>true</Drag>
+                      <AtmosphericDensityModel>1</AtmosphericDensityModel>
+                      <SolarFluxFileType>0</SolarFluxFileType>
+                      <SolarFluxFilename>DEFAULT</SolarFluxFilename>
+                      <HarrisPriesterF107Index>65</HarrisPriesterF107Index>
+                      <Lift>false</Lift>
+                      <Rho1 units="" displayed_units="">0</Rho1>
+                      <HarrisPriesterDensityFilename>DEFAULT</HarrisPriesterDensityFilename>
+                    </Atmospheric>
+                    <OtherAccelerations>
+                      <UseOtherAcceleration>false</UseOtherAcceleration>
+                      <OtherAccelerations units="km/s^2" displayed_units="km/s^2" dim="(3)">
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                      </OtherAccelerations>
+                      <OtherAccelerationsRate units="km/s^3" displayed_units="km/s^3" dim="(3)">
+                        <value>0</value>
+                        <value>0</value>
+                        <value>0</value>
+                      </OtherAccelerationsRate>
+                    </OtherAccelerations>
+                    <metadata dim="0" />
+                  </ForceModel>
+                </FM>
+                <ToleranceMode>1</ToleranceMode>
+                <RelativeErrorThreshold units="" displayed_units="">0.1</RelativeErrorThreshold>
+                <metadata dim="0" />
+              </RK89>
+            </Prop>
+          </PropFM>
+        </StateAdvancer>
+        <AHFParms>
+          <AHF xsi:nil="true" />
+          <AHFFilename></AHFFilename>
+        </AHFParms>
+        <Hardware>
+          <Sensors dim="0" />
+          <Tanks dim="0" />
+          <Thrusters dim="0" />
+          <ProximityZones dim="0" />
+          <Receivers dim="0" />
+          <GNSSReceivers dim="0" />
+          <Transponders dim="0" />
+        </Hardware>
+        <PlateModel>
+          <PlateModel name="Hermes_|PlateModel|" isConstant="false" isGlobal="false">
+            <Name>Hermes_|PlateModel|</Name>
+            <Plates dim="0" />
+            <DrawMethod>2</DrawMethod>
+            <DrawNormals>false</DrawNormals>
+            <DrawRotationAxes>false</DrawRotationAxes>
+            <Visible>true</Visible>
+            <VisualScale units="" displayed_units="">100000</VisualScale>
+            <metadata dim="0" />
+          </PlateModel>
+        </PlateModel>
+        <OD>
+          <SpacecraftODProperties name="Hermes_|SpacecraftODProperties|" isConstant="false" isGlobal="false">
+            <Name>Hermes_|SpacecraftODProperties|</Name>
+            <ElementSetToProcess>Cartesian</ElementSetToProcess>
+            <Cartesian>
+              <CartesianOrbitStateEstimablePropertyContainer name="Hermes_|SpacecraftODProperties|_|Cartesian|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|SpacecraftODProperties|_|Cartesian|</Name>
+                <X>
+                  <EstimablePosition name="Hermes_|SpacecraftODProperties|_|Cartesian|_|X|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Cartesian|_|X|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="km" displayed_units="km">0.05</Sigma>
+                    <ProcessNoise units="km^2" displayed_units="km^2">1e-014</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePosition>
+                </X>
+                <Y>
+                  <EstimablePosition name="Hermes_|SpacecraftODProperties|_|Cartesian|_|Y|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Cartesian|_|Y|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="km" displayed_units="km">0.05</Sigma>
+                    <ProcessNoise units="km^2" displayed_units="km^2">1e-014</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePosition>
+                </Y>
+                <Z>
+                  <EstimablePosition name="Hermes_|SpacecraftODProperties|_|Cartesian|_|Z|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Cartesian|_|Z|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="km" displayed_units="km">0.05</Sigma>
+                    <ProcessNoise units="km^2" displayed_units="km^2">1e-014</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePosition>
+                </Z>
+                <VX>
+                  <EstimableVelocity name="Hermes_|SpacecraftODProperties|_|Cartesian|_|VX|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Cartesian|_|VX|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="km/s" displayed_units="km/s">2e-005</Sigma>
+                    <ProcessNoise units="km^2/s^2" displayed_units="km^2/s^2">1e-017</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimableVelocity>
+                </VX>
+                <VY>
+                  <EstimableVelocity name="Hermes_|SpacecraftODProperties|_|Cartesian|_|VY|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Cartesian|_|VY|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="km/s" displayed_units="km/s">2e-005</Sigma>
+                    <ProcessNoise units="km^2/s^2" displayed_units="km^2/s^2">1e-017</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimableVelocity>
+                </VY>
+                <VZ>
+                  <EstimableVelocity name="Hermes_|SpacecraftODProperties|_|Cartesian|_|VZ|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Cartesian|_|VZ|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="km/s" displayed_units="km/s">2e-005</Sigma>
+                    <ProcessNoise units="km^2/s^2" displayed_units="km^2/s^2">1e-017</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimableVelocity>
+                </VZ>
+                <metadata dim="0" />
+              </CartesianOrbitStateEstimablePropertyContainer>
+            </Cartesian>
+            <Equinoctial>
+              <EquinoctialOrbitStateEstimablePropertyContainer name="Hermes_|SpacecraftODProperties|_|Equinoctial|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|SpacecraftODProperties|_|Equinoctial|</Name>
+                <A>
+                  <EstimableEquinoctialA name="Hermes_|SpacecraftODProperties|_|Equinoctial|_|A|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Equinoctial|_|A|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="km" displayed_units="km">0.05</Sigma>
+                    <ProcessNoise units="km^2" displayed_units="km^2">1e-014</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimableEquinoctialA>
+                </A>
+                <H>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|Equinoctial|_|H|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Equinoctial|_|H|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </H>
+                <K>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|Equinoctial|_|K|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Equinoctial|_|K|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </K>
+                <P>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|Equinoctial|_|P|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Equinoctial|_|P|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </P>
+                <Q>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|Equinoctial|_|Q|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Equinoctial|_|Q|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </Q>
+                <Longitude>
+                  <EstimableEquinoctialLongitude name="Hermes_|SpacecraftODProperties|_|Equinoctial|_|Longitude|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|Equinoctial|_|Longitude|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="deg" displayed_units="deg">0.001</Sigma>
+                    <ProcessNoise units="deg^2" displayed_units="deg^2">1e-015</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimableEquinoctialLongitude>
+                </Longitude>
+                <metadata dim="0" />
+              </EquinoctialOrbitStateEstimablePropertyContainer>
+            </Equinoctial>
+            <SGP4>
+              <Sgp4OrbitStateEstimablePropertyContainer name="Hermes_|SpacecraftODProperties|_|SGP4|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|SpacecraftODProperties|_|SGP4|</Name>
+                <H>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|SGP4|_|H|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|SGP4|_|H|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </H>
+                <K>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|SGP4|_|K|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|SGP4|_|K|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </K>
+                <P>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|SGP4|_|P|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|SGP4|_|P|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </P>
+                <Q>
+                  <EstimablePositionComponent name="Hermes_|SpacecraftODProperties|_|SGP4|_|Q|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|SGP4|_|Q|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="" displayed_units="">1e-005</Sigma>
+                    <ProcessNoise units="" displayed_units="">1e-019</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimablePositionComponent>
+                </Q>
+                <Longitude>
+                  <EstimableEquinoctialLongitude name="Hermes_|SpacecraftODProperties|_|SGP4|_|Longitude|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|SGP4|_|Longitude|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="deg" displayed_units="deg">0.001</Sigma>
+                    <ProcessNoise units="deg^2" displayed_units="deg^2">1e-015</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimableEquinoctialLongitude>
+                </Longitude>
+                <MeanMotion>
+                  <EstimableMeanMotion name="Hermes_|SpacecraftODProperties|_|SGP4|_|MeanMotion|" isConstant="false" isGlobal="false">
+                    <Name>Hermes_|SpacecraftODProperties|_|SGP4|_|MeanMotion|</Name>
+                    <ProcessAction>1</ProcessAction>
+                    <Sigma units="orbits/day" displayed_units="orbits/day">1e-006</Sigma>
+                    <ProcessNoise units="(orbits/day)^2" displayed_units="(orbits/day)^2">1e-016</ProcessNoise>
+                    <metadata dim="0" />
+                  </EstimableMeanMotion>
+                </MeanMotion>
+                <metadata dim="0" />
+              </Sgp4OrbitStateEstimablePropertyContainer>
+            </SGP4>
+            <Cd>
+              <EstimableCoefficient name="Hermes_|OD_Cd|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_Cd|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="" displayed_units="">0.05</Sigma>
+                <ProcessNoise units="" displayed_units="">1e-009</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableCoefficient>
+            </Cd>
+            <Rho1>
+              <EstimableCoefficient name="Hermes_|OD_Rho1|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_Rho1|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="" displayed_units="">0.05</Sigma>
+                <ProcessNoise units="" displayed_units="">1e-009</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableCoefficient>
+            </Rho1>
+            <BStar>
+              <EstimableBStar name="Hermes_|OD_BStar|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_BStar|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="er^-1" displayed_units="er^-1">1e-005</Sigma>
+                <ProcessNoise units="er^-2" displayed_units="er^-2">1e-012</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableBStar>
+            </BStar>
+            <AGOM>
+              <EstimableAGOM name="Hermes_|OD_AGOM|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_AGOM|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="m^2/kg" displayed_units="m^2/kg">1e-5</Sigma>
+                <ProcessNoise units="m^4/kg^2" displayed_units="m^4/kg^2">1e-12</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableAGOM>
+            </AGOM>
+            <DragEstimateOption>0</DragEstimateOption>
+            <Cr>
+              <EstimableCoefficient name="Hermes_|OD_Cr|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_Cr|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="" displayed_units="">0.05</Sigma>
+                <ProcessNoise units="" displayed_units="">1e-009</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableCoefficient>
+            </Cr>
+            <OtherAccelerationsX>
+              <EstimableAcceleration name="Hermes_|OD_UX|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_UX|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="km/s^2" displayed_units="km/s^2">1e-006</Sigma>
+                <ProcessNoise units="km^2/s^4" displayed_units="km^2/s^4">1e-015</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableAcceleration>
+            </OtherAccelerationsX>
+            <OtherAccelerationsY>
+              <EstimableAcceleration name="Hermes_|OD_UY|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_UY|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="km/s^2" displayed_units="km/s^2">1e-006</Sigma>
+                <ProcessNoise units="km^2/s^4" displayed_units="km^2/s^4">1e-015</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableAcceleration>
+            </OtherAccelerationsY>
+            <OtherAccelerationsZ>
+              <EstimableAcceleration name="Hermes_|OD_UZ|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|OD_UZ|</Name>
+                <ProcessAction>0</ProcessAction>
+                <Sigma units="km/s^2" displayed_units="km/s^2">1e-006</Sigma>
+                <ProcessNoise units="km^2/s^4" displayed_units="km^2/s^4">1e-015</ProcessNoise>
+                <metadata dim="0" />
+              </EstimableAcceleration>
+            </OtherAccelerationsZ>
+            <PropagateCovariance>false</PropagateCovariance>
+            <CovariancePropagationModel>0</CovariancePropagationModel>
+            <Covariance>
+              <SpacecraftCovariance name="Hermes_|Covariance|" isConstant="false" isGlobal="false">
+                <Name>Hermes_|Covariance|</Name>
+                <Matrix units="" displayed_units="" dim="0,0" />
+                <metadata dim="0" />
+              </SpacecraftCovariance>
+            </Covariance>
+            <CustomObservations dim="0" />
+            <metadata dim="0" />
+          </SpacecraftODProperties>
+        </OD>
+        <RefFrameEpochDetails>
+          <RefFrameEpochSystem>UTC</RefFrameEpochSystem>
+          <RefFrameEpochTimeZone>UTC +/- 00:00</RefFrameEpochTimeZone>
+          <RefFrameEpochFormat>Calendar</RefFrameEpochFormat>
+          <RefFrameEpochType>Absolute</RefFrameEpochType>
+          <RefFrameEpochTypeInfo />
+        </RefFrameEpochDetails>
+        <RefFrameEpoch>Jan 01 2020 00:00:00.000000000</RefFrameEpoch>
+        <OrbitNumberCalculationsEnabled>false</OrbitNumberCalculationsEnabled>
+        <metadata dim="0" />
+      </Spacecraft>
+    </Object>
+    <Object>
+      <String name="DepartTime" isConstant="false" isGlobal="false">
+        <Name>DepartTime</Name>
+        <Value></Value>
+        <metadata dim="0" />
+      </String>
+    </Object>
+    <Object>
+      <Variable name="ArrivalPlanet" isConstant="false" isGlobal="false">
+        <Name>ArrivalPlanet</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <Variable name="IsPrograde" isConstant="false" isGlobal="false">
+        <Name>IsPrograde</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <Variable name="StartPlanet" isConstant="false" isGlobal="false">
+        <Name>StartPlanet</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <Variable name="TOF" isConstant="false" isGlobal="false">
+        <Name>TOF</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <ViewWindow name="SolView" isConstant="false" isGlobal="false">
+        <Name>SolView</Name>
+        <WindowTitle>Solar System View</WindowTitle>
+        <Viewpoints dim="1">
+          <value>
+            <Viewpoint name="SolView_Viewpoint1" isConstant="false" isGlobal="false">
+              <Name>SolView_Viewpoint1</Name>
+              <ViewpointName>Viewpoint1</ViewpointName>
+              <ViewpointType>view</ViewpointType>
+              <ViewpointParameters>
+                <view>
+                  <ThreeDView>
+                    <ThreeDViewpointOptions name="SolView_Viewpoint1_|ThreeDView|" isConstant="false" isGlobal="false">
+                      <Name>SolView_Viewpoint1_|ThreeDView|</Name>
+                      <Source>Sun</Source>
+                      <Target>Sun</Target>
+                      <TailReference>Sun</TailReference>
+                      <ReferenceFrame>inertial</ReferenceFrame>
+                      <Declination units="deg" displayed_units="deg">90</Declination>
+                      <FieldOfView units="deg" displayed_units="deg">45</FieldOfView>
+                      <Radius units="km" displayed_units="km">602493602.461602</Radius>
+                      <RightAscension units="deg" displayed_units="deg">270</RightAscension>
+                      <metadata dim="0" />
+                    </ThreeDViewpointOptions>
+                  </ThreeDView>
+                </view>
+              </ViewpointParameters>
+              <metadata dim="0" />
+            </Viewpoint>
+          </value>
+        </Viewpoints>
+        <UseLighting>true</UseLighting>
+        <UseTextures>true</UseTextures>
+        <ShowLogo>true</ShowLogo>
+        <LogoTextureFilename></LogoTextureFilename>
+        <ShowStatusText>true</ShowStatusText>
+        <ShowTextBackdrops>true</ShowTextBackdrops>
+        <AmbientColor>6710886</AmbientColor>
+        <StatusTextColor>15790320</StatusTextColor>
+        <BackgroundColor>0</BackgroundColor>
+        <ObjectShadowing>0</ObjectShadowing>
+        <StatusTextFont>
+          <ViewFont name="SolView_|StatusTextFont|" isConstant="false" isGlobal="false">
+            <Name>SolView_|StatusTextFont|</Name>
+            <Bold>false</Bold>
+            <Italic>false</Italic>
+            <Size units="" displayed_units="">0.0</Size>
+            <Strikeout>false</Strikeout>
+            <Typeface>Tahoma</Typeface>
+            <Underline>false</Underline>
+            <metadata dim="0" />
+          </ViewFont>
+        </StatusTextFont>
+        <DefaultObjectLabelFont>
+          <ViewFont name="SolView_|DefaultObjectLabelFont|" isConstant="false" isGlobal="false">
+            <Name>SolView_|DefaultObjectLabelFont|</Name>
+            <Bold>false</Bold>
+            <Italic>false</Italic>
+            <Size units="" displayed_units="">20</Size>
+            <Strikeout>false</Strikeout>
+            <Typeface>Tahoma</Typeface>
+            <Underline>false</Underline>
+            <metadata dim="0" />
+          </ViewFont>
+        </DefaultObjectLabelFont>
+        <Objects dim="13">
+          <value>Mercury</value>
+          <value>Venus</value>
+          <value>Earth</value>
+          <value>Moon</value>
+          <value>Mars</value>
+          <value>Jupiter</value>
+          <value>Saturn</value>
+          <value>Uranus</value>
+          <value>Neptune</value>
+          <value>Pluto</value>
+          <value>Sun</value>
+          <value>Stars</value>
+          <value>Hermes</value>
+        </Objects>
+        <ProjectionHeights units="km" displayed_units="km" dim="13">
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>800</value>
+        </ProjectionHeights>
+        <ShowObject dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+        </ShowObject>
+        <ShowBody dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>0</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+        </ShowBody>
+        <ShowName dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>0</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>0</value>
+          <value>1</value>
+        </ShowName>
+        <ShowGrid dim="13">
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+        </ShowGrid>
+        <ShowAxes dim="13">
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+        </ShowAxes>
+        <ShowHistory dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>0</value>
+          <value>1</value>
+        </ShowHistory>
+        <ShowIcon dim="13">
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+        </ShowIcon>
+        <IconImageFilename dim="13">
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+          <value></value>
+        </IconImageFilename>
+        <IconSize units="" displayed_units="" dim="13">
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+          <value>30</value>
+        </IconSize>
+        <IconDrawingMode dim="13">
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+        </IconDrawingMode>
+        <IconColor dim="13">
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+          <value>4294967295</value>
+        </IconColor>
+        <StoreVelocity dim="13">
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+        </StoreVelocity>
+        <AxesScaleMode dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+        </AxesScaleMode>
+        <AxesSize units="km" displayed_units="km" dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+        </AxesSize>
+        <AxesScale units="" displayed_units="" dim="13">
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+          <value>1.3</value>
+        </AxesScale>
+        <TailLength units="" displayed_units="" dim="13">
+          <value>1000</value>
+          <value>1000</value>
+          <value>1000</value>
+          <value>0</value>
+          <value>1000</value>
+          <value>1000</value>
+          <value>1000</value>
+          <value>1000</value>
+          <value>1000</value>
+          <value>1000</value>
+          <value>0</value>
+          <value>0</value>
+          <value>100000</value>
+        </TailLength>
+        <HistoryMode units="" displayed_units="" dim="13">
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+          <value>0</value>
+        </HistoryMode>
+        <CurrentTailState units="" displayed_units="" dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+        </CurrentTailState>
+        <LineWidthUnits units="" displayed_units="" dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+        </LineWidthUnits>
+        <LineWidths units="" displayed_units="" dim="13">
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>1.0</value>
+        </LineWidths>
+        <LabelFonts dim="13">
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+          <value xsi:nil="true" />
+        </LabelFonts>
+        <MouseInteractionEnabled>true</MouseInteractionEnabled>
+        <metadata dim="0" />
+      </ViewWindow>
+    </Object>
+    <Object>
+      <UserInterface name="UserInterface1" isConstant="false" isGlobal="false">
+        <Name>UserInterface1</Name>
+        <General>
+          <Title>Lambert Time of Flight</Title>
+          <ContinueButtonLabel>&amp;Continue</ContinueButtonLabel>
+          <LabelColumnWidth units="pixel" displayed_units="pixel">200</LabelColumnWidth>
+          <DataColumnWidth units="pixel" displayed_units="pixel">400</DataColumnWidth>
+          <NavigationType>Ordered Access</NavigationType>
+          <Elements dim="8">
+            <value>
+              <UIPage name="UserInterface1_Main" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_Main</Name>
+                <PageTitle>Departure and Arrival Planets</PageTitle>
+                <metadata dim="0" />
+              </UIPage>
+            </value>
+            <value>
+              <UISeperator name="UserInterface1_FormattingElement1" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_FormattingElement1</Name>
+                <ShowLine>true</ShowLine>
+                <Label>Enter Departure Epoch in "Mmm DD YYYY hh:mm:ss.sssssssss" Format</Label>
+                <metadata dim="0" />
+              </UISeperator>
+            </value>
+            <value>
+              <UIStringTextEntry name="UserInterface1_DateDep" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_DateDep</Name>
+                <ValueDestination>
+                  <ObjectHolder name="UserInterface1_DateDep_:ValueDestination" isConstant="false" isGlobal="false">
+                    <Name>UserInterface1_DateDep_:ValueDestination</Name>
+                    <BaseObject>DepartTime</BaseObject>
+                    <metadata dim="0" />
+                  </ObjectHolder>
+                </ValueDestination>
+                <Label>Departure Date</Label>
+                <DefaultValue>
+                  <StringConstant name="UserInterface1_DateDep_:DefaultValue" isConstant="false" isGlobal="false">
+                    <Name>UserInterface1_DateDep_:DefaultValue</Name>
+                    <value>Jan 01 2010 00:00:00.000000000</value>
+                    <metadata dim="0" />
+                  </StringConstant>
+                </DefaultValue>
+                <DoPerformRegexValidation>true</DoPerformRegexValidation>
+                <ValidatingRegex>[A-Z][a-z]{2} [0-9]{2} [0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}\.?[0-9]*</ValidatingRegex>
+                <PasswordChar></PasswordChar>
+                <metadata dim="0" />
+              </UIStringTextEntry>
+            </value>
+            <value>
+              <UINumericTextEntry name="UserInterface1_TimeOfFlight" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_TimeOfFlight</Name>
+                <ValueDestination>
+                  <ObjectHolder name="UserInterface1_TimeOfFlight_:ValueDestination" isConstant="false" isGlobal="false">
+                    <Name>UserInterface1_TimeOfFlight_:ValueDestination</Name>
+                    <BaseObject>TOF</BaseObject>
+                    <metadata dim="0" />
+                  </ObjectHolder>
+                </ValueDestination>
+                <Label>Time of Flight</Label>
+                <DefaultValue>
+                  <DoubleConstant name="UserInterface1_TimeOfFlight_:DefaultValue" isConstant="false" isGlobal="false">
+                    <Name>UserInterface1_TimeOfFlight_:DefaultValue</Name>
+                    <value units="" displayed_units="">200</value>
+                    <metadata dim="0" />
+                  </DoubleConstant>
+                </DefaultValue>
+                <DoPerformRangeValidation>false</DoPerformRangeValidation>
+                <RangeMinimum units="" displayed_units="">-1</RangeMinimum>
+                <RangeMaximum units="" displayed_units="">1</RangeMaximum>
+                <Decimals units="" displayed_units="">0</Decimals>
+                <Units>days</Units>
+                <metadata dim="0" />
+              </UINumericTextEntry>
+            </value>
+            <value>
+              <UISeperator name="UserInterface1_FormattingElement2" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_FormattingElement2</Name>
+                <ShowLine>true</ShowLine>
+                <Label>Select Planets</Label>
+                <metadata dim="0" />
+              </UISeperator>
+            </value>
+            <value>
+              <UIMultiChoice name="UserInterface1_StartPlanet" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_StartPlanet</Name>
+                <ValueDestination>
+                  <ObjectHolder name="UserInterface1_StartPlanet_:ValueDestination" isConstant="false" isGlobal="false">
+                    <Name>UserInterface1_StartPlanet_:ValueDestination</Name>
+                    <BaseObject>StartPlanet</BaseObject>
+                    <metadata dim="0" />
+                  </ObjectHolder>
+                </ValueDestination>
+                <Label>Departure Planet</Label>
+                <Items dim="8">
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice1" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice1</Name>
+                      <Label>Mercury</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice1_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice1_:Value</Name>
+                          <value units="" displayed_units="">1</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice2" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice2</Name>
+                      <Label>Venus</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice2_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice2_:Value</Name>
+                          <value units="" displayed_units="">2</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice3" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice3</Name>
+                      <Label>Earth</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice3_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice3_:Value</Name>
+                          <value units="" displayed_units="">3</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice4" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice4</Name>
+                      <Label>Mars</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice4_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice4_:Value</Name>
+                          <value units="" displayed_units="">4</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice5" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice5</Name>
+                      <Label>Jupiter</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice5_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice5_:Value</Name>
+                          <value units="" displayed_units="">5</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice6" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice6</Name>
+                      <Label>Saturn</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice6_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice6_:Value</Name>
+                          <value units="" displayed_units="">6</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice7" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice7</Name>
+                      <Label>Uranus</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice7_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice7_:Value</Name>
+                          <value units="" displayed_units="">7</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_StartPlanet_Choice8" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_StartPlanet_Choice8</Name>
+                      <Label>Neptune</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_StartPlanet_Choice8_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_StartPlanet_Choice8_:Value</Name>
+                          <value units="" displayed_units="">8</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                </Items>
+                <DefaultValue>UserInterface1_StartPlanet_Choice3</DefaultValue>
+                <UseRadioButtons>false</UseRadioButtons>
+                <metadata dim="0" />
+              </UIMultiChoice>
+            </value>
+            <value>
+              <UIMultiChoice name="UserInterface1_ArrivalPlanet" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_ArrivalPlanet</Name>
+                <ValueDestination>
+                  <ObjectHolder name="UserInterface1_ArrivalPlanet_:ValueDestination" isConstant="false" isGlobal="false">
+                    <Name>UserInterface1_ArrivalPlanet_:ValueDestination</Name>
+                    <BaseObject>ArrivalPlanet</BaseObject>
+                    <metadata dim="0" />
+                  </ObjectHolder>
+                </ValueDestination>
+                <Label>Arrival Planet</Label>
+                <Items dim="8">
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice1" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice1</Name>
+                      <Label>Mercury</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice1_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice1_:Value</Name>
+                          <value units="" displayed_units="">1</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice2" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice2</Name>
+                      <Label>Venus</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice2_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice2_:Value</Name>
+                          <value units="" displayed_units="">2</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice3" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice3</Name>
+                      <Label>Earth</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice3_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice3_:Value</Name>
+                          <value units="" displayed_units="">3</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice4" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice4</Name>
+                      <Label>Mars</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice4_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice4_:Value</Name>
+                          <value units="" displayed_units="">4</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice5" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice5</Name>
+                      <Label>Jupiter</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice5_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice5_:Value</Name>
+                          <value units="" displayed_units="">5</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice6" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice6</Name>
+                      <Label>Saturn</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice6_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice6_:Value</Name>
+                          <value units="" displayed_units="">6</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice7" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice7</Name>
+                      <Label>Uranus</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice7_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice7_:Value</Name>
+                          <value units="" displayed_units="">7</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ArrivalPlanet_Choice8" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ArrivalPlanet_Choice8</Name>
+                      <Label>Neptune</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ArrivalPlanet_Choice8_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ArrivalPlanet_Choice8_:Value</Name>
+                          <value units="" displayed_units="">8</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                </Items>
+                <DefaultValue>UserInterface1_ArrivalPlanet_Choice4</DefaultValue>
+                <UseRadioButtons>false</UseRadioButtons>
+                <metadata dim="0" />
+              </UIMultiChoice>
+            </value>
+            <value>
+              <UIMultiChoice name="UserInterface1_ProRetro" isConstant="false" isGlobal="false">
+                <Name>UserInterface1_ProRetro</Name>
+                <ValueDestination>
+                  <ObjectHolder name="UserInterface1_ProRetro_:ValueDestination" isConstant="false" isGlobal="false">
+                    <Name>UserInterface1_ProRetro_:ValueDestination</Name>
+                    <BaseObject>IsPrograde</BaseObject>
+                    <metadata dim="0" />
+                  </ObjectHolder>
+                </ValueDestination>
+                <Label>Prograde or retrograde solution?</Label>
+                <Items dim="2">
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ProRetro_Choice1" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ProRetro_Choice1</Name>
+                      <Label>Prograde</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ProRetro_Choice1_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ProRetro_Choice1_:Value</Name>
+                          <value units="" displayed_units="">1</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                  <value>
+                    <UIMultiChoiceItem name="UserInterface1_ProRetro_Choice2" isConstant="false" isGlobal="false">
+                      <Name>UserInterface1_ProRetro_Choice2</Name>
+                      <Label>Retrograde</Label>
+                      <Value>
+                        <DoubleConstant name="UserInterface1_ProRetro_Choice2_:Value" isConstant="false" isGlobal="false">
+                          <Name>UserInterface1_ProRetro_Choice2_:Value</Name>
+                          <value units="" displayed_units="">0</value>
+                          <metadata dim="0" />
+                        </DoubleConstant>
+                      </Value>
+                      <metadata dim="0" />
+                    </UIMultiChoiceItem>
+                  </value>
+                </Items>
+                <DefaultValue>UserInterface1_ProRetro_Choice1</DefaultValue>
+                <UseRadioButtons>false</UseRadioButtons>
+                <metadata dim="0" />
+              </UIMultiChoice>
+            </value>
+          </Elements>
+        </General>
+        <metadata dim="0" />
+      </UserInterface>
+    </Object>
+    <Object>
+      <Variable name="TOF2" isConstant="false" isGlobal="false">
+        <Name>TOF2</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <String name="DepartTime2" isConstant="false" isGlobal="false">
+        <Name>DepartTime2</Name>
+        <Value></Value>
+        <metadata dim="0" />
+      </String>
+    </Object>
+    <Object>
+      <Variable name="TOF3" isConstant="false" isGlobal="false">
+        <Name>TOF3</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <Variable name="TOF4" isConstant="false" isGlobal="false">
+        <Name>TOF4</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <Variable name="TOF_Total" isConstant="false" isGlobal="false">
+        <Name>TOF_Total</Name>
+        <Value units="" displayed_units="">0</Value>
+        <metadata dim="0" />
+      </Variable>
+    </Object>
+    <Object>
+      <String name="DepartTime3" isConstant="false" isGlobal="false">
+        <Name>DepartTime3</Name>
+        <Value></Value>
+        <metadata dim="0" />
+      </String>
+    </Object>
+    <Object>
+      <String name="DepartTime4" isConstant="false" isGlobal="false">
+        <Name>DepartTime4</Name>
+        <Value></Value>
+        <metadata dim="0" />
+      </String>
+    </Object>
+  </ProjectObjects>
+  <ProjectMissionSequence>
+    <ProjectExternals />
+    <ProjectCommands>
+      <FreeForm enabled="true">
+        <Label>Mission Plan Description and Console Setup</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Mission Plan Description and Console Setup
+
+/*
+This Mission Plan demonstrates how to use FreeForm scripting to calculate a
+Lambert transfer trajectory. The user specifies the departure date, time of flight, 
+departure planet, arrival planet, and whether to use a prograde or a retrograde orbit.
+
+FreeForm script is used to solve for the universal anomaly X using Newton's algorithm.
+The equations and methodology used to solve Lamberts problem are adapted from the book
+"Orbital Mechanics for Engineering Students" by H. D. Curtis. The View Window shows
+a solar system view displaying all planets and the interplanetary spacecraft trajectory.
+
+Only the Sun's point mass gravitational effects are modeled. Note that the Keplerian 
+Elements reported out are in the J2000 Equatorial frame.
+*/
+
+Console.DockMode = 3;
+Console.WordWrap = 1;
+Console.Dimension = 35;
+Console.BackColor = ColorTools.Black;
+Console.CurrentTextColor = ColorTools.Lime;
+Console.Show();
+
+Report  @"This is an adaptation of the lambert transfer mission in Freeflyer for AME 557 Project 2 " +
+        "which is University of Arizona Course for orbital Dynamics. \n" to Console;
+
+
+/*
+Report @"This Mission Plan demonstrates how to use FreeForm scripting to calculate a " +
+        "Lambert transfer trajectory. The user specifies the departure date, time of flight, " +
+        "departure planet, arrival planet, and whether to use a prograde or a retrograde orbit. \n" to Console;
+
+Report @"FreeForm script is used to solve for the universal anomaly X using Newton's algorithm. " +
+        "The equations and methodology used to solve Lamberts problem are adapted from the book " +
+        "'Orbital Mechanics for Engineering Students' by H. D. Curtis. The View Window shows a " +
+        "solar system view displaying all planets and the interplanetary spacecraft trajectory. \n" to Console;
+
+Report "Only the Sun's point mass gravitational effects are modeled. Note that the Keplerian Elements " +
+       "reported out are in the J2000 Equatorial frame." to Console;
+*/]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Define Globals and Procedures</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Define Globals and Procedures
+
+Global Variable varR1;///Departure position magnitude
+Global Variable varR2;///Arrival position magnitude
+Global Variable Const;///Constant 'A'
+Global Variable Mu = Sun.Mu;///Gravity constant for the sun
+Global Variable ErrCount = 0;///Error counter
+
+// Stumpff function C(z)
+Define Procedure Cfunc(Variable z, Variable out);
+
+	If (z > 0);
+		out = (1 - cos(sqrt(z)))/z;
+	ElseIf (z < 0);
+		out = (cosh(sqrt(-z)) - 1)/(-z);
+	Else;
+		out = 1/2;
+	End;
+
+EndProcedure;
+
+// Stumpff function S(z)
+Define Procedure Sfunc(Variable z, Variable out);
+
+	If (z > 0);
+        out = (sqrt(z) - sin(sqrt(z)))/(sqrt(z))^3;
+	ElseIf (z < 0);
+        out = (sinh(sqrt(-z)) - sqrt(-z))/(sqrt(-z))^3;
+	Else;
+		out = 1/6;
+	End;
+
+EndProcedure;
+
+// Y(z)
+Define Procedure Yfunc(Variable z, Variable out);
+
+	Variable sOut = 0;
+	Variable cOut = 0;
+
+	Call Cfunc(z,cOut);
+	Call Sfunc(z,sOut);
+	Try sending ErrorCount to ErrCount;
+		out = varR1 + varR2 + Const*(z*sOut - 1)/sqrt(cOut);
+	End;
+EndProcedure;
+
+// F(z) to solve for the universal anomaly X
+Define Procedure Ffunc(Variable z, Variable t, Variable out);
+
+	Variable sOut = 0;
+	Variable cOut = 0;
+	Variable yOut = 0;
+
+	Call Cfunc(z,cOut);
+	Call Sfunc(z,sOut);
+	Call Yfunc(z,yOut);
+
+	Try sending ErrorCount to ErrCount;
+		out = ((yOut/cOut)^1.5)*sOut + Const*sqrt(yOut) - sqrt(Mu)*t;
+	End;
+
+EndProcedure;
+
+// dF(z) to use in Newton's algorithm
+Define Procedure dFfunc(Variable z, Variable out);
+
+	Variable sOut = 0;
+	Variable cOut = 0;
+	Variable yOut = 0;
+	Variable Yout0 = 0;
+
+	Call Cfunc(z,cOut);
+	Call Sfunc(z,sOut);
+	Call Yfunc(z,yOut);
+	Call Yfunc(0,Yout0);
+
+	// Errors encountered are due to imaginary numbers in the F-function solution.
+	Try sending ErrorCount to ErrCount;
+		If (-2e-16 < z < 2e-16);
+			out = sqrt(2)/40*Yout0^1.5 + Const/8*(sqrt(Yout0)+Const*sqrt(1/2/Yout0));
+		Else;
+			out = (yOut/cOut)^1.5 * (1/2/z*(cOut-3*sOut/2/cOut)+3*sOut^2/4/cOut)
+					+ Const/8*(3*sOut/cOut*sqrt(yOut) + Const*sqrt(cOut/yOut));
+		End;
+	End;
+
+EndProcedure;
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Initialize Variables</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Initialize Variables
+
+Array departurePos[3];
+Array arrivalPos[3];
+Array cross12[3];
+Array vDepart[3];
+Array vArrival[3];
+
+Array departurePos2[3];
+Array arrivalPos2[3];
+Array cross122[3];
+Array vDepart2[3];
+Array vArrival2[3];
+
+Array departurePos3[3];
+Array arrivalPos3[3];
+Array cross123[3];
+Array vDepart3[3];
+Array vArrival3[3];
+
+Array departurePos4[3];
+Array arrivalPos4[3];
+Array cross124[3];
+Array vDepart4[3];
+Array vArrival4[3];
+
+Variable theta;
+Variable yOut;
+Variable fOut;
+Variable dFOut;
+Variable z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+Variable n = 0;
+Variable ratio = 1;
+Variable nMax = 100000;///Maximum number of iterations allowed
+Variable tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+Variable f;
+Variable g;
+Variable gdot;
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Solve Lamberts Problem</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Solve Lambert's Problem
+//Earth to the Mars 123 Days
+
+// Convert from days to seconds
+TOF = 123;
+TOF *= 86400; 
+Hermes.CentralBody = "Sun";
+DepartTime = "Jul 07 2035 00:00:00.000";
+Hermes.Epoch = DepartTime.ParseCalendarDate();
+
+// Get Planet positions
+departurePos = Hermes.PlanetPosition(Earth.BodyID);
+departurePos[2] = departurePos[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF);
+arrivalPos = Hermes.PlanetPosition(Mars.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF);
+
+// Magnitudes of position vectors
+varR1 = departurePos.Norm();
+varR2 = arrivalPos.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross12 = departurePos.CrossProduct(arrivalPos);
+theta = departurePos.VertexAngle(arrivalPos);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+	If (cross12[2] < 0);
+		theta = 360 - theta;
+	End;
+ElseIf (IsPrograde == 0);
+	If (cross12[2] >= 0);
+		theta = 360 - theta;
+	End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence 
+While (fOut < 0);
+
+	Call Ffunc(z, TOF, fOut);
+
+	// Errors encountered are due to imaginary numbers in the F-function solution.
+	// Increasing the z value at a faster rate if errors.
+	If (ErrCount > 0);
+		z++;
+		ErrCount = 0;
+	Else;
+		z += 0.1;
+	End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+	Call Ffunc(z, TOF, fOut);
+	Call dFfunc(z, dFOut);
+	ratio = fOut/dFOut;
+	n++;
+	z -= ratio;
+
+End;
+
+If (nMax <= n);
+	Console.CurrentTextColor = ColorTools.Red;
+	Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+	Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart = 1/g*(arrivalPos - f*departurePos);
+vArrival = 1/g*(gdot*arrivalPos - departurePos);
+
+Hermes.Position = departurePos;
+Hermes.Velocity = vDepart;
+
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Output Results</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Output Results
+
+// Seconds to days
+TOF /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Step Spacecraft</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Step Spacecraft
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF));
+	Step Hermes;
+	Update SolView;
+End;
+
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Variable Reset</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[// Define Globals and Procedures
+varR1 = 0;///Departure position magnitude
+varR2 = 0;///Arrival position magnitude
+Mu = Sun.Mu;///Gravity constant for the sun
+ErrCount = 0;///Error counter
+
+theta = 0;
+yOut = 0;
+fOut = 0;
+dFOut = 0;
+z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+n = 0;
+ratio = 1;
+nMax = 100000;///Maximum number of iterations allowed
+tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+f = 0;
+g = 0;
+gdot = 0;
+
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Solve Lamberts Problem 2</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[// Mars to Earth Flight 230 Days
+
+// Convert from days to seconds
+TOF2 = 236;
+TOF2 *= 86400;
+Hermes.CentralBody = "Sun";
+DepartTime2 = "Nov 13 2035 00:00:00.000";
+Hermes.Epoch = DepartTime2.ParseCalendarDate();
+
+// Get Planet positions
+departurePos2 = Hermes.PlanetPosition(Mars.BodyID);
+departurePos2[2] = departurePos2[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF2);
+arrivalPos2 = Hermes.PlanetPosition(Earth.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF2);
+
+// Magnitudes of position vectors
+varR1 = departurePos2.Norm();
+varR2 = arrivalPos2.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross122 = departurePos2.CrossProduct(arrivalPos2);
+theta = departurePos2.VertexAngle(arrivalPos2);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+If (cross122[2] < 0);
+theta = 360 - theta;
+End;
+ElseIf (IsPrograde == 0);
+If (cross122[2] >= 0);
+theta = 360 - theta;
+End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence
+While (fOut < 0);
+
+Call Ffunc(z, TOF2, fOut);
+
+// Errors encountered are due to imaginary numbers in the F-function solution.
+// Increasing the z value at a faster rate if errors.
+If (ErrCount > 0);
+z++;
+ErrCount = 0;
+Else;
+z += 0.1;
+End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+Call Ffunc(z, TOF2, fOut);
+Call dFfunc(z, dFOut);
+ratio = fOut/dFOut;
+n++;
+z -= ratio;
+
+End;
+
+If (nMax <= n);
+Console.CurrentTextColor = ColorTools.Red;
+Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart2 = 1/g*(arrivalPos2 - f*departurePos2);
+vArrival2 = 1/g*(gdot*arrivalPos2 - departurePos2);
+
+Hermes.Position = departurePos2;
+Hermes.Velocity = vDepart2;
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Output Results 2</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Output Results
+
+// Seconds to days
+TOF2 /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF2)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF2<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Step Spacecraft 2</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Step Spacecraft
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF2));
+	Step Hermes;
+	Update SolView;
+End;
+
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Variable Reset</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[// Define Globals and Procedures
+varR1 = 0;///Departure position magnitude
+varR2 = 0;///Arrival position magnitude
+Mu = Sun.Mu;///Gravity constant for the sun
+ErrCount = 0;///Error counter
+
+theta = 0;
+yOut = 0;
+fOut = 0;
+dFOut = 0;
+z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+n = 0;
+ratio = 1;
+nMax = 100000;///Maximum number of iterations allowed
+tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+f = 0;
+g = 0;
+gdot = 0;
+
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Solve Lamberts Problem 3</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[// Mars to Earth Flight 230 Days
+
+// Convert from days to seconds
+TOF3 = 322; //322
+TOF3 *= 86400;
+Hermes.CentralBody = "Sun";
+DepartTime3 = "Jul 06 2036 00:00:00.000";
+Hermes.Epoch = DepartTime3.ParseCalendarDate();
+
+// Get Planet positions
+departurePos3 = Hermes.PlanetPosition(Earth.BodyID);
+departurePos3[2] = departurePos3[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF3);
+arrivalPos3 = Hermes.PlanetPosition(Mars.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF3);
+
+// Magnitudes of position vectors
+varR1 = departurePos3.Norm();
+varR2 = arrivalPos3.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross123 = departurePos3.CrossProduct(arrivalPos3);
+theta = departurePos3.VertexAngle(arrivalPos3);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+If (cross123[2] < 0);
+theta = 360 - theta;
+End;
+ElseIf (IsPrograde == 0);
+If (cross123[2] >= 0);
+theta = 360 - theta;
+End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence
+While (fOut < 0);
+
+Call Ffunc(z, TOF3, fOut);
+
+// Errors encountered are due to imaginary numbers in the F-function solution.
+// Increasing the z value at a faster rate if errors.
+If (ErrCount > 0);
+z++;
+ErrCount = 0;
+Else;
+z += 0.1;
+End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+Call Ffunc(z, TOF3, fOut);
+Call dFfunc(z, dFOut);
+ratio = fOut/dFOut;
+n++;
+z -= ratio;
+
+End;
+
+If (nMax <= n);
+Console.CurrentTextColor = ColorTools.Red;
+Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart3 = 1/g*(arrivalPos3 - f*departurePos3);
+vArrival3 = 1/g*(gdot*arrivalPos3 - departurePos3);
+
+Hermes.Position = departurePos3;
+Hermes.Velocity = vDepart3;
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Output Results 3</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Output Results
+
+// Seconds to days
+TOF3 /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF3)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF3<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Step Spacecraft 3</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Step Spacecraft
+
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF3));
+	Step Hermes;
+	Update SolView;
+End;
+
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Variable Reset</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[// Define Globals and Procedures
+varR1 = 0;///Departure position magnitude
+varR2 = 0;///Arrival position magnitude
+Mu = Sun.Mu;///Gravity constant for the sun
+ErrCount = 0;///Error counter
+
+theta = 0;
+yOut = 0;
+fOut = 0;
+dFOut = 0;
+z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+n = 0;
+ratio = 1;
+nMax = 100000;///Maximum number of iterations allowed
+tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+f = 0;
+g = 0;
+gdot = 0;
+
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Solve Lamberts Problem 4</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[// Mars to Earth Flight 211 Days
+
+// Convert from days to seconds
+TOF4 = 211;
+TOF4 *= 86400;
+Hermes.CentralBody = "Sun";
+DepartTime4 = "May 24 2037 00:00:00.000"; // "May 24 2037 00:00:00.000"
+Hermes.Epoch = DepartTime4.ParseCalendarDate();
+
+// Get Planet positions
+departurePos4 = Hermes.PlanetPosition(Mars.BodyID);
+departurePos4[2] = departurePos4[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF4);
+arrivalPos4 = Hermes.PlanetPosition(Earth.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF4);
+
+// Magnitudes of position vectors
+varR1 = departurePos4.Norm();
+varR2 = arrivalPos4.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross122 = departurePos4.CrossProduct(arrivalPos4);
+theta = departurePos4.VertexAngle(arrivalPos4);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+If (cross124[2] < 0);
+theta = 360 - theta;
+End;
+ElseIf (IsPrograde == 0);
+If (cross124[2] >= 0);
+theta = 360 - theta;
+End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence
+While (fOut < 0);
+
+Call Ffunc(z, TOF4, fOut);
+
+// Errors encountered are due to imaginary numbers in the F-function solution.
+// Increasing the z value at a faster rate if errors.
+If (ErrCount > 0);
+z++;
+ErrCount = 0;
+Else;
+z += 0.1;
+End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+Call Ffunc(z, TOF4, fOut);
+Call dFfunc(z, dFOut);
+ratio = fOut/dFOut;
+n++;
+z -= ratio;
+
+End;
+
+If (nMax <= n);
+Console.CurrentTextColor = ColorTools.Red;
+Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart4 = 1/g*(arrivalPos4 - f*departurePos4);
+vArrival4 = 1/g*(gdot*arrivalPos4 - departurePos4);
+
+Hermes.Position = departurePos4;
+Hermes.Velocity = vDepart4;
+]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Output Results 4</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Output Results
+
+// Seconds to days
+TOF4 /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF4)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF4<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;]]></FreeFormScript>
+      </FreeForm>
+      <FreeForm enabled="true">
+        <Label>Step Spacecraft 4</Label>
+        <Bookmarks />
+        <Breakpoints />
+        <FreeFormScript><![CDATA[
+// Step Spacecraft
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF4));
+	Step Hermes;
+	Update SolView;
+End;
+
+]]></FreeFormScript>
+      </FreeForm>
+    </ProjectCommands>
+  </ProjectMissionSequence>
+  <ProjectScript><![CDATA[
+// Mission Plan Description and Console Setup
+
+/*
+This Mission Plan demonstrates how to use FreeForm scripting to calculate a
+Lambert transfer trajectory. The user specifies the departure date, time of flight, 
+departure planet, arrival planet, and whether to use a prograde or a retrograde orbit.
+
+FreeForm script is used to solve for the universal anomaly X using Newton's algorithm.
+The equations and methodology used to solve Lamberts problem are adapted from the book
+"Orbital Mechanics for Engineering Students" by H. D. Curtis. The View Window shows
+a solar system view displaying all planets and the interplanetary spacecraft trajectory.
+
+Only the Sun's point mass gravitational effects are modeled. Note that the Keplerian 
+Elements reported out are in the J2000 Equatorial frame.
+*/
+
+Console.DockMode = 3;
+Console.WordWrap = 1;
+Console.Dimension = 35;
+Console.BackColor = ColorTools.Black;
+Console.CurrentTextColor = ColorTools.Lime;
+Console.Show();
+
+Report  @"This is an adaptation of the lambert transfer mission in Freeflyer for AME 557 Project 2 " +
+        "which is University of Arizona Course for orbital Dynamics. \n" to Console;
+
+
+/*
+Report @"This Mission Plan demonstrates how to use FreeForm scripting to calculate a " +
+        "Lambert transfer trajectory. The user specifies the departure date, time of flight, " +
+        "departure planet, arrival planet, and whether to use a prograde or a retrograde orbit. \n" to Console;
+
+Report @"FreeForm script is used to solve for the universal anomaly X using Newton's algorithm. " +
+        "The equations and methodology used to solve Lamberts problem are adapted from the book " +
+        "'Orbital Mechanics for Engineering Students' by H. D. Curtis. The View Window shows a " +
+        "solar system view displaying all planets and the interplanetary spacecraft trajectory. \n" to Console;
+
+Report "Only the Sun's point mass gravitational effects are modeled. Note that the Keplerian Elements " +
+       "reported out are in the J2000 Equatorial frame." to Console;
+*/
+
+// Define Globals and Procedures
+
+Global Variable varR1;///Departure position magnitude
+Global Variable varR2;///Arrival position magnitude
+Global Variable Const;///Constant 'A'
+Global Variable Mu = Sun.Mu;///Gravity constant for the sun
+Global Variable ErrCount = 0;///Error counter
+
+// Stumpff function C(z)
+Define Procedure Cfunc(Variable z, Variable out);
+
+	If (z > 0);
+		out = (1 - cos(sqrt(z)))/z;
+	ElseIf (z < 0);
+		out = (cosh(sqrt(-z)) - 1)/(-z);
+	Else;
+		out = 1/2;
+	End;
+
+EndProcedure;
+
+// Stumpff function S(z)
+Define Procedure Sfunc(Variable z, Variable out);
+
+	If (z > 0);
+        out = (sqrt(z) - sin(sqrt(z)))/(sqrt(z))^3;
+	ElseIf (z < 0);
+        out = (sinh(sqrt(-z)) - sqrt(-z))/(sqrt(-z))^3;
+	Else;
+		out = 1/6;
+	End;
+
+EndProcedure;
+
+// Y(z)
+Define Procedure Yfunc(Variable z, Variable out);
+
+	Variable sOut = 0;
+	Variable cOut = 0;
+
+	Call Cfunc(z,cOut);
+	Call Sfunc(z,sOut);
+	Try sending ErrorCount to ErrCount;
+		out = varR1 + varR2 + Const*(z*sOut - 1)/sqrt(cOut);
+	End;
+EndProcedure;
+
+// F(z) to solve for the universal anomaly X
+Define Procedure Ffunc(Variable z, Variable t, Variable out);
+
+	Variable sOut = 0;
+	Variable cOut = 0;
+	Variable yOut = 0;
+
+	Call Cfunc(z,cOut);
+	Call Sfunc(z,sOut);
+	Call Yfunc(z,yOut);
+
+	Try sending ErrorCount to ErrCount;
+		out = ((yOut/cOut)^1.5)*sOut + Const*sqrt(yOut) - sqrt(Mu)*t;
+	End;
+
+EndProcedure;
+
+// dF(z) to use in Newton's algorithm
+Define Procedure dFfunc(Variable z, Variable out);
+
+	Variable sOut = 0;
+	Variable cOut = 0;
+	Variable yOut = 0;
+	Variable Yout0 = 0;
+
+	Call Cfunc(z,cOut);
+	Call Sfunc(z,sOut);
+	Call Yfunc(z,yOut);
+	Call Yfunc(0,Yout0);
+
+	// Errors encountered are due to imaginary numbers in the F-function solution.
+	Try sending ErrorCount to ErrCount;
+		If (-2e-16 < z < 2e-16);
+			out = sqrt(2)/40*Yout0^1.5 + Const/8*(sqrt(Yout0)+Const*sqrt(1/2/Yout0));
+		Else;
+			out = (yOut/cOut)^1.5 * (1/2/z*(cOut-3*sOut/2/cOut)+3*sOut^2/4/cOut)
+					+ Const/8*(3*sOut/cOut*sqrt(yOut) + Const*sqrt(cOut/yOut));
+		End;
+	End;
+
+EndProcedure;
+
+
+// Initialize Variables
+
+Array departurePos[3];
+Array arrivalPos[3];
+Array cross12[3];
+Array vDepart[3];
+Array vArrival[3];
+
+Array departurePos2[3];
+Array arrivalPos2[3];
+Array cross122[3];
+Array vDepart2[3];
+Array vArrival2[3];
+
+Array departurePos3[3];
+Array arrivalPos3[3];
+Array cross123[3];
+Array vDepart3[3];
+Array vArrival3[3];
+
+Array departurePos4[3];
+Array arrivalPos4[3];
+Array cross124[3];
+Array vDepart4[3];
+Array vArrival4[3];
+
+Variable theta;
+Variable yOut;
+Variable fOut;
+Variable dFOut;
+Variable z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+Variable n = 0;
+Variable ratio = 1;
+Variable nMax = 100000;///Maximum number of iterations allowed
+Variable tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+Variable f;
+Variable g;
+Variable gdot;
+
+
+// Solve Lambert's Problem
+//Earth to the Mars 123 Days
+
+// Convert from days to seconds
+TOF = 123;
+TOF *= 86400; 
+Hermes.CentralBody = "Sun";
+DepartTime = "Jul 07 2035 00:00:00.000";
+Hermes.Epoch = DepartTime.ParseCalendarDate();
+
+// Get Planet positions
+departurePos = Hermes.PlanetPosition(Earth.BodyID);
+departurePos[2] = departurePos[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF);
+arrivalPos = Hermes.PlanetPosition(Mars.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF);
+
+// Magnitudes of position vectors
+varR1 = departurePos.Norm();
+varR2 = arrivalPos.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross12 = departurePos.CrossProduct(arrivalPos);
+theta = departurePos.VertexAngle(arrivalPos);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+	If (cross12[2] < 0);
+		theta = 360 - theta;
+	End;
+ElseIf (IsPrograde == 0);
+	If (cross12[2] >= 0);
+		theta = 360 - theta;
+	End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence 
+While (fOut < 0);
+
+	Call Ffunc(z, TOF, fOut);
+
+	// Errors encountered are due to imaginary numbers in the F-function solution.
+	// Increasing the z value at a faster rate if errors.
+	If (ErrCount > 0);
+		z++;
+		ErrCount = 0;
+	Else;
+		z += 0.1;
+	End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+	Call Ffunc(z, TOF, fOut);
+	Call dFfunc(z, dFOut);
+	ratio = fOut/dFOut;
+	n++;
+	z -= ratio;
+
+End;
+
+If (nMax <= n);
+	Console.CurrentTextColor = ColorTools.Red;
+	Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+	Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart = 1/g*(arrivalPos - f*departurePos);
+vArrival = 1/g*(gdot*arrivalPos - departurePos);
+
+Hermes.Position = departurePos;
+Hermes.Velocity = vDepart;
+
+
+
+// Output Results
+
+// Seconds to days
+TOF /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;
+
+// Step Spacecraft
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF));
+	Step Hermes;
+	Update SolView;
+End;
+
+
+// Define Globals and Procedures
+varR1 = 0;///Departure position magnitude
+varR2 = 0;///Arrival position magnitude
+Mu = Sun.Mu;///Gravity constant for the sun
+ErrCount = 0;///Error counter
+
+theta = 0;
+yOut = 0;
+fOut = 0;
+dFOut = 0;
+z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+n = 0;
+ratio = 1;
+nMax = 100000;///Maximum number of iterations allowed
+tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+f = 0;
+g = 0;
+gdot = 0;
+
+
+// Mars to Earth Flight 230 Days
+
+// Convert from days to seconds
+TOF2 = 236;
+TOF2 *= 86400;
+Hermes.CentralBody = "Sun";
+DepartTime2 = "Nov 13 2035 00:00:00.000";
+Hermes.Epoch = DepartTime2.ParseCalendarDate();
+
+// Get Planet positions
+departurePos2 = Hermes.PlanetPosition(Mars.BodyID);
+departurePos2[2] = departurePos2[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF2);
+arrivalPos2 = Hermes.PlanetPosition(Earth.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF2);
+
+// Magnitudes of position vectors
+varR1 = departurePos2.Norm();
+varR2 = arrivalPos2.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross122 = departurePos2.CrossProduct(arrivalPos2);
+theta = departurePos2.VertexAngle(arrivalPos2);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+If (cross122[2] < 0);
+theta = 360 - theta;
+End;
+ElseIf (IsPrograde == 0);
+If (cross122[2] >= 0);
+theta = 360 - theta;
+End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence
+While (fOut < 0);
+
+Call Ffunc(z, TOF2, fOut);
+
+// Errors encountered are due to imaginary numbers in the F-function solution.
+// Increasing the z value at a faster rate if errors.
+If (ErrCount > 0);
+z++;
+ErrCount = 0;
+Else;
+z += 0.1;
+End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+Call Ffunc(z, TOF2, fOut);
+Call dFfunc(z, dFOut);
+ratio = fOut/dFOut;
+n++;
+z -= ratio;
+
+End;
+
+If (nMax <= n);
+Console.CurrentTextColor = ColorTools.Red;
+Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart2 = 1/g*(arrivalPos2 - f*departurePos2);
+vArrival2 = 1/g*(gdot*arrivalPos2 - departurePos2);
+
+Hermes.Position = departurePos2;
+Hermes.Velocity = vDepart2;
+
+
+// Output Results
+
+// Seconds to days
+TOF2 /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF2)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF2<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;
+
+// Step Spacecraft
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF2));
+	Step Hermes;
+	Update SolView;
+End;
+
+
+// Define Globals and Procedures
+varR1 = 0;///Departure position magnitude
+varR2 = 0;///Arrival position magnitude
+Mu = Sun.Mu;///Gravity constant for the sun
+ErrCount = 0;///Error counter
+
+theta = 0;
+yOut = 0;
+fOut = 0;
+dFOut = 0;
+z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+n = 0;
+ratio = 1;
+nMax = 100000;///Maximum number of iterations allowed
+tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+f = 0;
+g = 0;
+gdot = 0;
+
+
+// Mars to Earth Flight 230 Days
+
+// Convert from days to seconds
+TOF3 = 322; //322
+TOF3 *= 86400;
+Hermes.CentralBody = "Sun";
+DepartTime3 = "Jul 06 2036 00:00:00.000";
+Hermes.Epoch = DepartTime3.ParseCalendarDate();
+
+// Get Planet positions
+departurePos3 = Hermes.PlanetPosition(Earth.BodyID);
+departurePos3[2] = departurePos3[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF3);
+arrivalPos3 = Hermes.PlanetPosition(Mars.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF3);
+
+// Magnitudes of position vectors
+varR1 = departurePos3.Norm();
+varR2 = arrivalPos3.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross123 = departurePos3.CrossProduct(arrivalPos3);
+theta = departurePos3.VertexAngle(arrivalPos3);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+If (cross123[2] < 0);
+theta = 360 - theta;
+End;
+ElseIf (IsPrograde == 0);
+If (cross123[2] >= 0);
+theta = 360 - theta;
+End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence
+While (fOut < 0);
+
+Call Ffunc(z, TOF3, fOut);
+
+// Errors encountered are due to imaginary numbers in the F-function solution.
+// Increasing the z value at a faster rate if errors.
+If (ErrCount > 0);
+z++;
+ErrCount = 0;
+Else;
+z += 0.1;
+End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+Call Ffunc(z, TOF3, fOut);
+Call dFfunc(z, dFOut);
+ratio = fOut/dFOut;
+n++;
+z -= ratio;
+
+End;
+
+If (nMax <= n);
+Console.CurrentTextColor = ColorTools.Red;
+Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart3 = 1/g*(arrivalPos3 - f*departurePos3);
+vArrival3 = 1/g*(gdot*arrivalPos3 - departurePos3);
+
+Hermes.Position = departurePos3;
+Hermes.Velocity = vDepart3;
+
+
+// Output Results
+
+// Seconds to days
+TOF3 /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF3)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF3<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;
+
+// Step Spacecraft
+
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF3));
+	Step Hermes;
+	Update SolView;
+End;
+
+
+// Define Globals and Procedures
+varR1 = 0;///Departure position magnitude
+varR2 = 0;///Arrival position magnitude
+Mu = Sun.Mu;///Gravity constant for the sun
+ErrCount = 0;///Error counter
+
+theta = 0;
+yOut = 0;
+fOut = 0;
+dFOut = 0;
+z = -50;///Z = alpha*X^2, where alpha is 1/a and X is the universal anomaly
+n = 0;
+ratio = 1;
+nMax = 100000;///Maximum number of iterations allowed
+tol = 1e-10;///Tolerance used for when solving using Newton's algorithm
+
+f = 0;
+g = 0;
+gdot = 0;
+
+
+// Mars to Earth Flight 211 Days
+
+// Convert from days to seconds
+TOF4 = 211;
+TOF4 *= 86400;
+Hermes.CentralBody = "Sun";
+DepartTime4 = "May 24 2037 00:00:00.000"; // "May 24 2037 00:00:00.000"
+Hermes.Epoch = DepartTime4.ParseCalendarDate();
+
+// Get Planet positions
+departurePos4 = Hermes.PlanetPosition(Mars.BodyID);
+departurePos4[2] = departurePos4[2];
+Hermes.Epoch += TimeSpan.FromSeconds(TOF4);
+arrivalPos4 = Hermes.PlanetPosition(Earth.BodyID);
+Hermes.Epoch -= TimeSpan.FromSeconds(TOF4);
+
+// Magnitudes of position vectors
+varR1 = departurePos4.Norm();
+varR2 = arrivalPos4.Norm();
+
+// Calculate cross product to determine orbit direction and calculate transfer angle
+cross122 = departurePos4.CrossProduct(arrivalPos4);
+theta = departurePos4.VertexAngle(arrivalPos4);
+
+// Change initial theta to adjust orbit direction
+IsPrograde = 1;
+If (IsPrograde == 1);
+If (cross124[2] < 0);
+theta = 360 - theta;
+End;
+ElseIf (IsPrograde == 0);
+If (cross124[2] >= 0);
+theta = 360 - theta;
+End;
+End;
+
+Const = sin(rad(theta))*sqrt(varR1*varR2/(1 - cos(rad(theta))));
+fOut = -1;
+
+// Determine when the F-function crosses 0 to determine an initial z value for easier convergence
+While (fOut < 0);
+
+Call Ffunc(z, TOF4, fOut);
+
+// Errors encountered are due to imaginary numbers in the F-function solution.
+// Increasing the z value at a faster rate if errors.
+If (ErrCount > 0);
+z++;
+ErrCount = 0;
+Else;
+z += 0.1;
+End;
+End;
+
+// Iterate the F-function using Newtons algorithm to find a solution for Lamberts problem
+While ((abs(ratio) > tol) and (n <= nMax));
+
+Call Ffunc(z, TOF4, fOut);
+Call dFfunc(z, dFOut);
+ratio = fOut/dFOut;
+n++;
+z -= ratio;
+
+End;
+
+If (nMax <= n);
+Console.CurrentTextColor = ColorTools.Red;
+Report "Maximum number of iterations reached, no solution found. Stopping mission plan." to Console;
+Stop;
+End;
+
+Call Yfunc(z,yOut);
+
+// Solve the f, g, and gdot functions to determine departure and arrival velocities.
+f = 1 - yOut/varR1;
+g = Const*sqrt(yOut/Mu);
+gdot = 1 - yOut/varR2;
+
+vDepart4 = 1/g*(arrivalPos4 - f*departurePos4);
+vArrival4 = 1/g*(gdot*arrivalPos4 - departurePos4);
+
+Hermes.Position = departurePos4;
+Hermes.Velocity = vDepart4;
+
+
+// Output Results
+
+// Seconds to days
+TOF4 /= 86400;
+
+Console.CurrentFontType = 1;
+Console.CurrentTextColor = ColorTools.White;
+Report @"\nDeparture date: \n  ", 	Hermes.Epoch.ConvertToCalendarDate() to Console;
+Report @"Arrival date: \n  ", 		(Hermes.Epoch + TimeSpan.FromDays(TOF4)).ConvertToCalendarDate() to Console;
+Report "Time of flight: ",		TOF4<8,1>, @" days\n" to Console;
+
+Report "Keplerian Elements " to Console;
+Report "  A:    ", 				Hermes.A<17,2>, " km" to Console;
+Report "  E:    ", 				Hermes.E<17,2>, " deg" to Console;
+Report "  I:    ", 				Hermes.I<17,2>, " deg" to Console;
+Report "  RAAN: ", 				Hermes.RAAN<17,2>, " deg" to Console;
+Report "  W:    ", 				Hermes.W<17,2>, " deg" to Console;
+Report "  TA:   ", 				Hermes.TA<17,2>, " deg" to Console;
+
+// Step Spacecraft
+
+While (Hermes.ElapsedTime < TimeSpan.FromDays(TOF4));
+	Step Hermes;
+	Update SolView;
+End;
+
+]]></ProjectScript>
+  <ProjectNotes></ProjectNotes>
+</FreeFlyerProjectFile>
